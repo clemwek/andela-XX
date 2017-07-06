@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block page_content %}
+
+<div class="container">
+    <form class="form-signin" action="/add_bucketlist" method="POST">
+        <h2 class="form-signin-heading">Add the bucketlist</h2>
+        <div class="form-group">
+            <label for="bucketlist" class="sr-only">Bucketlist</label>
+            <input type="text" id="bucketlist" class="form-control" placeholder="Bucketlist" required autofocus>
+        </div>
+
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Add Bucketlist</button>
+    </form>
+</div>
+
+{% endblock %}

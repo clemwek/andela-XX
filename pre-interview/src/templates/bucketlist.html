@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block page_content %}
+
+<div class="container">
+    <div class="row">
+        <div class="header">
+            <h1>Bucketlist</h1>
+            <div class="pull-right">
+                <a href="/add_bucketlist" class="btn btn-default">Add bucketlist</a>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card-container">
+                <div class="card">
+                    <h4><b>Bucketlist name</b></h4>
+                    <div class="pull-right">
+                        <a class="add-activity" href="/add_activity/{}">Add activity</a>
+                    </div>
+                    <p>List of activities</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card-container">
+                <div class="card">
+                    <h4><b>Bucketlist name</b></h4>
+                    <div class="pull-right">
+                        <a class="add-activity" href="/add_activity/{}">Add activity</a>
+                    </div>
+                    <p>List of activities</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card-container">
+                <div class="card">
+                    <h4><b>Bucketlist name</b></h4>
+                    <div class="pull-right">
+                        <a class="add-activity" href="/add_activity/{}">Add activity</a>
+                    </div>
+                    <p>List of activities</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
