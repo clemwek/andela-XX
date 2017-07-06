@@ -21,8 +21,8 @@ class TestBucketListApp(unittest.TestCase):
         add_bucketlist = client.get('/add_bucketlist', content_type='html/text')
         self.assertEqual(add_bucketlist.status_code, 200)
 
-        add_activity = client.get('/add_activity', content_type='html/text')
-        self.assertEqual(add_activity.status_code, 200)
+        # add_activity = client.get('/add_activity', content_type='html/text')
+        # self.assertEqual(add_activity.status_code, 200)
 
 if __name__ == '__main__':
     unittest.main()
