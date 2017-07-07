@@ -3,6 +3,9 @@
 {% block page_content %}
 
 <div class="container">
+    {% for message in get_flashed_messages() %}
+        {{ message }}
+    {% endfor %}
     <div class="row">
         <div class="header">
             <h1>Bucketlist</h1>

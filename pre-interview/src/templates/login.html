@@ -3,6 +3,9 @@
 {% block page_content %}
 
 <div class="container">
+    {% for message in get_flashed_messages() %}
+        {{ message }}
+    {% endfor %}
     {% if error %}
     <div class="alert alert-danger" role="alert">
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
