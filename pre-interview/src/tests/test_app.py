@@ -3,52 +3,73 @@ from src.app import app
 
 
 class TestBucketListApp(unittest.TestCase):
-    def register(self, email, password, name):
-        client = app.test_client(self)
-        return client.post(
-            '/register',
-            data=dict(inputEmail=email, inputPassword=password, inputName=name),
-            follow_redirects=True
-        )
+    def setUp(self):
+        self.client = app.test_client(self)
+
+    def register(self, name, email, password):
+        # client = app.test_client(self)
+        with self.client:
+            return self.client.post(
+                '/register',
+                data=dict(inputName=name, inputEmail=email, inputPassword=password, inputPasswordAgain="test"),
+                follow_redirects=True
+            )
 
     def login(self, email, password):
-        return self.app.post(
-            '/login',
-            data=dict(email=email, password=password),
-            follow_redirects=True
-        )
+        with self.client:
+            self.client.post(
+                '/register',
+                data=dict(inputName='test', inputEmail='test@test.com', inputPassword=password, inputPasswordAgain="test"),
+                follow_redirects=True
+            )
+            self.client.get(
+                '/logout', follow_redirects=True)
+            return self.client.post(
+                '/login',
+                data=dict(inputEmail=email, inputPassword=password),
+                follow_redirects=True
+            )
 
     def logout(self):
-        return self.app.get(
-            '/logout',
-            follow_redirects=True
-        )
+        # client = app.test_client(self)
+        with self.client:
+            return self.client.get(
+                '/logout', follow_redirects=True)
 
     def test_urls(self):
-        client = app.test_client(self)
-        welcome = client.get('/', content_type='html/text')
+        welcome = self.client.get('/', content_type='html/text')
         self.assertEqual(welcome.status_code, 200)
+        self.assertIn(b'Bucket List', welcome.data)
 
-        login = client.get('/login', content_type='html/text')
+        login = self.client.get('/login', content_type='html/text')
         self.assertEqual(login.status_code, 200)
+        self.assertIn(b'Please sign in', login.data)
 
-        bucketlist = client.get('/bucketlist', content_type='html/text')
-        # app.login('admin@test.com', 'admin')
-        self.assertEqual(bucketlist.status_code, 302)
+    def test_protected_urls(self):
+        bucketlist = self.client.get('/bucketlist', content_type='html/text', follow_redirects=True)
+        self.assertIn(b'You need to login first', bucketlist.data)
 
-        add_bucketlist = client.get('/add_bucketlist', content_type='html/text')
-        self.assertEqual(add_bucketlist.status_code, 302)
-
-        # add_activity = client.get('/add_activity', content_type='html/text')
-        # self.assertEqual(add_activity.status_code, 200)
+        add_bucketlist = self.client.get('/add_bucketlist', content_type='html/text', follow_redirects=True)
+        self.assertIn(b'You need to login first', add_bucketlist.data)
 
     def test_register(self):
-        # client = app.test_client(self)
-        # data = {'inputName': 'john', 'inputEmail': 'test@test.com', 'inputPassword': 'test'}
-        # response = client.post('register', data=data, follow_redirects=True)
-        response = self.register('patkennedy79@gmail.com', 'FlaskIsAwesome', 'FlaskIsAwesome')
-        # self.assertEqual(response.status_code, 200)
-        self.assertIn(b'logged in', response.data)
+        response = self.register('test', 'test@test.com', 'test')
+        self.assertIn(b'You are registered and logged in', response.data)
+        # self.assertTrue(response.session['email'] == "test@test.com")
+        # self.assertTrue(self.client.session['logged_in'])
+
+    def test_logout(self):
+        response = self.logout()
+        self.assertIn(b'you are logged out.', response.data)
+
+    def test_correct_login(self):
+        response = self.login('test@test.com', 'test')
+        self.assertIn(b'You are logged in', response.data)
+
+    def test_incorrect_login(self):
+        response = self.login('test@te.com', 'test')
+        self.assertIn(b'Invalid credentials, please try again.', response.data)
+
 
 if __name__ == '__main__':
     unittest.main()
